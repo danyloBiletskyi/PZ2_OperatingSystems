@@ -5,17 +5,23 @@
 #include <string>
 #include <algorithm>
 
-
+//----------------------------------TASK 2.1 Method pre-declaration----------------------------------
 void task2_1();
 int getTheNumberOfElementsBelowAverage(int average, int length, int arr[]);
 void makeAChoice(int arr[], int actualSize);
 int deleteElementsHigherAverageAndReturnAvg(int arr[], int length);
 void readTheElementsOfAnArray(int arr[], int length);
+void readTheElementsOfAnArray(double arr[], int length);
 void selectionSort(int arr[], int length);
 int addElementsToTheBeginingAndReturnNewSize(int arr[], int length);
 
+//----------------------------------TASK 2.2 Method pre-declaration----------------------------------
+void Task2_2();
+void selectionSortForDouble(double arr[], int length);
+int binarySearch(double arr[], int length, double element);
 int main() {
-	task2_1();
+	/*task2_1();*/
+	Task2_2();
 	return 0;
 }
 
@@ -164,4 +170,88 @@ int addElementsToTheBeginingAndReturnNewSize(int arr[], int length) {
 
 	length += K;
 	return length;
+}
+
+
+//----------------------------------TASK 2.2----------------------------------
+
+void Task2_2() {
+	using namespace std;
+
+	//------------------------Array generation------------------------
+	const int MAX_SIZE = 100;
+	double arr[MAX_SIZE];
+	int actualSize;
+	cout << "Enter an array size that is < " << MAX_SIZE << " : ";
+	cin >> actualSize;
+	cout << endl;
+	cout << "Array is being generated......." << endl;
+	for (int i = 0; i < actualSize; i++) {
+		int multiplier = rand() % 100 - 50;
+		arr[i] = ((double)rand() / RAND_MAX) * (double)multiplier;
+	}
+	cout << "------------------------------------------------------------------------------------------------" << endl;
+	cout << "Result of generating of an array: ";
+	selectionSortForDouble(arr, actualSize);
+	readTheElementsOfAnArray(arr, actualSize);
+
+	cout << "------------------------------------------------------------------------------------------------" << endl;
+
+	cout << "Enter an element you want to add into a sequence: ";
+	
+	double b;
+	cin >> b;
+	int position = binarySearch(arr, actualSize, b);
+	int temp = arr[position];
+	for (int i = actualSize - 1; i >= position; i--) {
+		arr[i + 1] = arr[i];
+	}
+	arr[position] = b;
+	actualSize += 1;
+	readTheElementsOfAnArray(arr, actualSize);
+}
+
+
+void selectionSortForDouble(double arr[], int length) {
+	for (int i = 1; i < length; i++) {
+		int j = i - 1;
+		double key = arr[i];
+
+		while (arr[j] > key && j >= 0) {
+			arr[j + 1] = arr[j];
+			j--;
+		}
+		arr[j + 1] = key;
+	}
+}
+
+void readTheElementsOfAnArray(double arr[], int length) {
+	for (int i = 0; i < length; i++) {
+		if (i != length - 1) {
+			std::cout << arr[i] << ", ";
+		}
+		else {
+			std::cout << arr[i] << ".";
+		}
+	}
+	std::cout << std::endl;
+}
+int binarySearch(double arr[], int length, double element) {
+	int right = length - 1;
+	int left = 0;
+
+	while (left <= right) {
+		int center = left + (right - left) / 2;
+		if (arr[center] == element) {
+			return center;
+		}
+		else if (arr[center] < element) {
+			left = center + 1;
+		}
+		else{
+			right = center - 1;
+		}
+	}
+	return left;
+	
 }
