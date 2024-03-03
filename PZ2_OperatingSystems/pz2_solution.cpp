@@ -1,10 +1,19 @@
 #include <iostream>
 #include <stdlib.h>
 #include <numeric>
+#include <sstream>
+#include <string>
+#include <algorithm>
+
 
 void task2_1();
 int getTheNumberOfElementsBelowAverage(int average, int length, int arr[]);
+void makeAChoice(int arr[], int actualSize);
+int deleteElementsHigherAverageAndReturnAvg(int arr[], int length);
+void readTheElementsOfAnArray(int arr[], int length);
 void selectionSort(int arr[], int length);
+int addElementsToTheBeginingAndReturnNewSize(int arr[], int length);
+
 int main() {
 	task2_1();
 	return 0;
@@ -15,34 +24,25 @@ int main() {
 void task2_1() {
 	using namespace std;
 
-	//TASK 1----------------------------------
+	//------------------------Array generation------------------------
 	const int MAX_SIZE = 100;
 	int arr [MAX_SIZE];
 	int actualSize;
 	cout << "Enter an array size that is < " << MAX_SIZE << " : ";
 	cin >> actualSize;
-
+	cout << endl;
+	cout << "Array is being generated......." << endl;
 	for (int i = 0; i < actualSize; i++) {
-		arr[i] = rand() % 100 + 1;
+		arr[i] = rand() % 100 - 50;
 	}
+	cout << "------------------------------------------------------------------------------------------------" << endl;
+	cout << "Result of generating of an array: ";
+	readTheElementsOfAnArray(arr, actualSize);
 
-	//TASK 2----------------------------------
-	for (int i = 0; i < actualSize; i++) {
-		cout << arr[i] << endl;
-	}
+	//------------------------Suggesting and selecting an operation------------------------
+	cout << "------------------------------------------------------------------------------------------------" << endl;
+	makeAChoice(arr, actualSize);
 
-	//TASK 3----------------------------------
-	int avg = 0;
-	avg = accumulate(arr, arr + actualSize, avg) / actualSize;
-	cout << "Average is " << avg << endl;
-	selectionSort(arr, actualSize);
-	actualSize = getTheNumberOfElementsBelowAverage(avg, actualSize, arr);
-
-	//TASK 4----------------------------------
-	cout << "Array after the delete: " << endl;
-	for (int i = 0; i < actualSize; i++) {
-		cout << arr[i] << endl;
-	}
 }
 
 int getTheNumberOfElementsBelowAverage(int average, int length, int arr[]) {
@@ -68,4 +68,100 @@ void selectionSort(int arr[], int length) {
 		}
 		arr[j + 1] = key;
 	}
+}
+
+int deleteElementsHigherAverageAndReturnAvg(int arr[], int length) {
+	using namespace std;
+	int avg = 0;
+	avg = accumulate(arr, arr + length, avg) / length;
+	cout << "Average is " << avg << endl;
+	selectionSort(arr, length);
+	return avg;
+}
+
+void readTheElementsOfAnArray(int arr[], int length) {
+	for (int i = 0; i < length; i++) {
+		if (i != length - 1) {
+			std::cout << arr[i] << ", ";
+		}
+		else {
+			std::cout << arr[i] << ".";
+		}
+	}
+	std::cout << std::endl;
+}
+
+
+void makeAChoice(int arr[], int actualSize) {
+	using namespace std;
+	string choice;
+	cout << "Choose an operation: " << endl;
+	cout << "1. Delete all elements > than average of an array" << endl;
+	cout << "2. Add K elements to the begining" << endl;
+	cout << "3. Move the M elements to the right" << endl;
+	cout << "4. Search the first even element" << endl;
+	cout << "5. Sort the array" << endl;
+	cout << "9. Quit" << endl;
+	while (true) {
+		cout << "Your choice: ";
+		cin >> choice;
+
+		if (choice == "1") {
+			int avg = deleteElementsHigherAverageAndReturnAvg(arr, actualSize);
+			actualSize = getTheNumberOfElementsBelowAverage(avg, actualSize, arr);
+			cout << "Array after the delete: ";
+			readTheElementsOfAnArray(arr, actualSize);
+		}
+		else if (choice == "2") {
+			actualSize = addElementsToTheBeginingAndReturnNewSize(arr, actualSize);
+			readTheElementsOfAnArray(arr, actualSize);
+		}
+		else if (choice == "3") {
+			cout << "How far do you want to move the elements? ";
+			int M;
+			cin >> M;
+			reverse(arr, arr + actualSize);
+			reverse(arr, arr + M);
+			reverse(arr + M, arr + actualSize);
+			readTheElementsOfAnArray(arr, actualSize);
+		}
+		else if (choice == "4") {
+			int countOfSteps = 0;
+			for (int i = 0; i < actualSize; i++) {
+				if (arr[i] % 2 == 0) {
+					break;
+				}
+				countOfSteps++;
+			}
+			cout << "First even number was found! It is : " << arr[countOfSteps] << " and was found on " << countOfSteps + 1 << " step." << endl;
+		}
+		else if (choice == "5") {
+			selectionSort(arr, actualSize);
+		}
+		else if (choice == "9") {
+			break;
+		}
+		else {
+			cout << "Wrong choice, YOU SHALL NOT PASS!!!" << endl;
+		}
+	}
+}
+
+
+int addElementsToTheBeginingAndReturnNewSize(int arr[], int length) {
+	using namespace std;
+	int K;
+	cout << "How many integers do you want to add? ";
+	cin >> K;
+	for (int i = length - 1; i >= 0; i--) {
+		arr[i + K] = arr[i];
+	}
+
+	for (int i = 0; i < K; i++) {
+		cout << "Enter your number: ";
+		cin >> arr[i];
+	}
+
+	length += K;
+	return length;
 }
